@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Modal from 'react-modal'
 import './App.css'
 function App() {
   const [age, setAge] = useState(0);
@@ -8,7 +9,14 @@ function App() {
   const [hr, setHr] = useState(0);
   const [ca, setCa] = useState(0);
   const [chestPain, setChestPain] = useState('normal');
-  const [data, setData] = useState();
+  const [data, setData] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const openModal = () => {
+   setModalIsOpen(true);
+  };
+  const closeModal = () => {
+   setModalIsOpen(false);
+  };
   const handleSubmit = async (e) => {
      e.preventDefault();
      const response = await fetch('http://127.0.0.1:5000/submit', {method:'POST',
@@ -26,8 +34,8 @@ function App() {
             }
          });
          const dat = await response.json();
-         setData(dat); 
-         console.log(dat);
+         setData(dat)
+         openModal();
   }
   return (
     <>
@@ -95,6 +103,12 @@ function App() {
                 <button className="button-item" onClick={handleSubmit}>submit</button>
               </div>
            </form>
+           <Modal isOpen={modalIsOpen} 
+            onRequestClose={closeModal}
+            contentLabel="Example Modal">
+               <h2>{data.result ? 'true' : 'false'}</h2>
+               <button onClick={closeModal}>Close Modal</button>
+            </Modal>
        </div>
     </>
   )
